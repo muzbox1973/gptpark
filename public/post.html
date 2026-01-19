@@ -29,9 +29,7 @@
                 <p style="color: var(--text-muted); margin-top: 1rem;">Decyphering Neural Data...</p>
             </div>
             <div id="post-content-area" style="display: none;">
-                <h1 id="post-title"
-                    style="font-size: 3rem; margin-bottom: 1.5rem; font-family: var(--font-heading); background: linear-gradient(to right, white, #a1a1aa); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
-                </h1>
+                <h1 id="post-title" class="post-title"></h1>
                 <div id="post-tags" class="tags-container" style="margin-bottom: 1rem;"></div>
                 <div id="post-date" style="color: var(--primary); margin-bottom: 3rem; font-size: 0.9rem;"></div>
                 <div id="post-body" class="post-content"></div>
@@ -51,7 +49,11 @@
         // Theme Logic
         function applyTheme() {
             const theme = localStorage.getItem('theme') || 'dark';
-            if (theme === 'light') document.body.classList.add('light-mode');
+            if (theme === 'light') {
+                document.body.classList.add('light-mode');
+            } else {
+                document.body.classList.remove('light-mode');
+            }
             document.getElementById('theme-btn').innerText = theme === 'light' ? '☀️ Light' : '🌙 Dark';
         }
         function toggleTheme() {
