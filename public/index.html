@@ -29,8 +29,9 @@
 
         <main id="posts-grid" class="grid">
             <!-- Posts will be loaded here via JS -->
-            <div class="card" style="opacity: 0.5; grid-column: 1/-1; text-align: center;">
-                <h2>Deep Loading...</h2>
+            <div id="initial-loader" style="grid-column: 1/-1; text-align: center; padding: 4rem;">
+                <div class="spinner"></div>
+                <p style="color: var(--text-muted); margin-top: 1rem;">Scanning synthetic insights...</p>
             </div>
         </main>
 
@@ -47,11 +48,15 @@
                 if (!res.ok) throw new Error('Failed to load');
                 const posts = await res.json();
 
+                if (!Array.isArray(posts)) {
+                    throw new Error(posts.error || 'Failed to parse insights');
+                }
+
                 const grid = document.getElementById('posts-grid');
                 grid.innerHTML = '';
 
                 if (posts.length === 0) {
-                    grid.innerHTML = '<p style="text-align:center; grid-column: 1/-1; color: var(--text-muted);">No insights published yet.</p>';
+                    grid.innerHTML = '<div style="text-align:center; grid-column: 1/-1; padding: 4rem; background: var(--card-bg); border-radius: 1rem;"><p style="color: var(--text-muted);">The synthetic archive is currently empty.</p></div>';
                     return;
                 }
 
