@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GPT PARK - Admin</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Quill CSS -->
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+</head>
+
+<body>
+    <div id="login-view" class="login-container">
+        <h2 style="text-align: center; margin-bottom: 2rem;">Admin Login</h2>
+        <input type="text" id="username" placeholder="Username">
+        <input type="password" id="password" placeholder="Password">
+        <button onclick="handleLogin()">Login</button>
+        <p id="login-error" style="color: #ef4444; text-align: center; display: none;">Invalid credentials</p>
+    </div>
+
+    <div id="dashboard-view" class="container" style="display: none;">
+        <div class="admin-layout">
+            <aside class="sidebar">
+                <div class="logo-admin">GPT PARK Admin</div>
+                <div class="nav-item active" onclick="switchTab('posts')">Manage Posts</div>
+                <div class="nav-item" onclick="switchTab('db')">Database</div>
+                <div class="nav-item" onclick="switchTab('settings')">Settings</div>
+                <div class="nav-item" onclick="logout()" style="color: #ef4444; margin-top: 2rem;">Logout</div>
+            </aside>
+
+            <main class="content">
+                <!-- Posts Tab -->
+                <div id="tab-posts">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                        <h2>Posts</h2>
+                        <button onclick="showEditor()">+ New Post</button>
+                    </div>
+                    <div id="posts-list">
+                        <!-- List loaded via JS -->
+                    </div>
+                </div>
+
+                <!-- Editor (Hidden by default) -->
+                <div id="editor-wrapper" style="display: none;">
+                    <div style="margin-bottom: 1rem;">
+                        <button class="secondary btn-sm" onclick="hideEditor()">← Back</button>
+                        <span id="editor-mode-label" style="margin-left: 1rem;">New Post</span>
+                    </div>
+                    <input type="text" id="post-title" placeholder="Post Title"
+                        style="font-size: 1.2rem; font-weight: bold;">
+                    <input type="text" id="post-slug" placeholder="slug-url-optional" style="font-size: 0.9rem;">
+
+                    <div class="editor-container">
+                        <div id="quill-editor" style="height: 300px;"></div>
+                        <textarea id="html-editor"
+                            style="display: none; height: 300px; width: 100%; color: black; padding: 1rem;"></textarea>
+                    </div>
+
+                    <div style="margin-top: 1rem; display: flex; justify-content: space-between;">
+                        <label style="display: flex; align-items: center; gap: 0.5rem; color: var(--text-muted);">
+                            <input type="checkbox" id="html-toggle" style="width: auto; margin:0;"
+                                onchange="toggleHtmlMode()"> Edit HTML
+                        </label>
+                        <button onclick="savePost()"
+                            style="width: auto; padding-left: 2rem; padding-right: 2rem;">Publish</button>
+                    </div>
+                </div>
+
+                <!-- DB Tab -->
+                <div id="tab-db" style="display: none;">
+                    <h2>Database Management</h2>
+                    <p style="color: var(--text-muted); margin-bottom: 1rem;">Execute raw SQL queries. Use with caution.
+                    </p>
+                    <textarea id="sql-query" placeholder="SELECT * FROM posts"
+                        style="height: 100px; font-family: monospace;"></textarea>
+                    <button onclick="runQuery()">Execute SQL</button>
+                    <div id="query-result" class="table-responsive"
+                        style="margin-top: 2rem; background: var(--card-bg); padding: 1rem; border-radius: 0.5rem;">
+                        <!-- Results -->
+                    </div>
+                </div>
+
+                <!-- Settings Tab -->
+                <div id="tab-settings" style="display: none;">
+                    <h2>Settings</h2>
+                    <p>Environment configuration is managed via <code>wrangler.toml</code>.</p>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Quill JS -->
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+    <script src="admin.js"></script>
+</body>
+
+</html>

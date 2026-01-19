@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GPT PARK - AI Insights</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">GPT PARK</div>
+            <!-- Navigation could go here -->
+        </header>
+
+        <section class="hero" style="margin-bottom: 4rem; text-align: center;">
+            <h1
+                style="font-size: 3rem; margin-bottom: 1rem; background: linear-gradient(to right, #06b6d4, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                Future of AI Intelligence</h1>
+            <p style="color: var(--text-muted); font-size: 1.25rem;">Exploring the boundaries of technology and
+                humanity.</p>
+        </section>
+
+        <main id="posts-grid" class="grid">
+            <!-- Posts will be loaded here via JS -->
+            <div class="card" style="opacity: 0.5;">
+                <h2>Loading Insights...</h2>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        async function loadPosts() {
+            try {
+                const res = await fetch('/api/posts');
+                if (!res.ok) throw new Error('Failed to load');
+                const posts = await res.json();
+
+                const grid = document.getElementById('posts-grid');
+                grid.innerHTML = '';
+
+                if (posts.length === 0) {
+                    grid.innerHTML = '<p style="text-align:center; grid-column: 1/-1;">No insights published yet.</p>';
+                }
+
+                posts.forEach(post => {
+                    const card = document.createElement('div');
+                    card.className = 'card';
+                    // Strip HTML for excerpt
+                    const temp = document.createElement('div');
+                    temp.innerHTML = post.content;
+                    const text = temp.textContent || temp.innerText || "";
+                    const excerpt = text.substring(0, 150) + '...';
+
+                    card.innerHTML = `
+                        <h2>${post.title}</h2>
+                        <p>${post.excerpt || excerpt}</p>
+                        <div style="margin-top: 1rem; font-size: 0.8rem; color: var(--primary);">
+                            ${new Date(post.created_at).toLocaleDateString()}
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+            } catch (e) {
+                console.error(e);
+            }
+        }
+        loadPosts();
+    </script>
+</body>
+
+</html>
