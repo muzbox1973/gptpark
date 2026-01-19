@@ -111,6 +111,7 @@ async function loadPosts() {
                     <div style="font-size: 0.8rem; color: var(--text-muted);">${new Date(post.created_at).toLocaleDateString()}</div>
                 </div>
                 <div>
+                    <button class="btn-sm" style="background: rgba(34, 211, 238, 0.1); color: var(--primary); margin-right: 0.5rem;" onclick="editPost(${post.id})">Edit</button>
                     <button class="btn-sm btn-danger" onclick="deletePost(${post.id})">Delete</button>
                 </div>
             `;
@@ -122,13 +123,39 @@ async function loadPosts() {
     }
 }
 
-function showEditor() {
+function showEditor(isEdit = false) {
     document.getElementById('tab-posts').style.display = 'none';
     document.getElementById('editor-wrapper').style.display = 'block';
-    // Reset fields
-    document.getElementById('post-title').value = '';
-    document.getElementById('post-slug').value = '';
-    quill.root.innerHTML = '';
+    document.getElementById('editor-mode-label').innerText = isEdit ? 'Edit Post' : 'New Post';
+
+    if (!isEdit) {
+        currentPostId = null;
+        document.getElementById('post-title').value = '';
+        document.getElementById('post-slug').value = '';
+        quill.root.innerHTML = '';
+        document.getElementById('html-editor').value = '';
+    }
+}
+
+async function editPost(id) {
+    try {
+        const res = await fetch(`${API_URL}/posts/${id}`);
+        const post = await res.json();
+
+        currentPostId = id;
+        showEditor(true);
+
+        document.getElementById('post-title').value = post.title;
+        document.getElementById('post-slug').value = post.slug;
+
+        if (document.getElementById('html-toggle').checked) {
+            document.getElementById('html-editor').value = post.content;
+        } else {
+            quill.root.innerHTML = post.content;
+        }
+    } catch (e) {
+        alert('Failed to load post for editing');
+    }
 }
 
 function hideEditor() {
@@ -164,8 +191,8 @@ async function savePost() {
 
     const token = localStorage.getItem('token');
 
-    const res = await fetch(`${API_URL}/posts`, {
-        method: 'POST',
+    const res = await fetch(currentPostId ? `${API_URL}/posts/${currentPostId}` : `${API_URL}/posts`, {
+        method: currentPostId ? 'PUT' : 'POST',
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`

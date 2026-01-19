@@ -64,6 +64,27 @@ app.post('/posts', async (c) => {
     }
 });
 
+// Update Post
+app.put('/posts/:id', async (c) => {
+    try {
+        const auth = c.req.header('Authorization');
+        if (auth !== 'Bearer simple-admin-token') return c.json({ error: 'Unauthorized' }, 401);
+
+        const id = c.req.param('id');
+        const { title, content, format, slug } = await c.req.json();
+        if (!title || !content) return c.json({ error: 'Title and content are required' }, 400);
+
+        const finalSlug = slug || title.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
+
+        await c.env.DB.prepare('UPDATE posts SET title = ?, content = ?, format = ?, slug = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?')
+            .bind(title, content, format || 'html', finalSlug, id)
+            .run();
+        return c.json({ success: true });
+    } catch (e) {
+        return c.json({ error: e.message }, 500);
+    }
+});
+
 // Delete Post
 app.delete('/posts/:id', async (c) => {
     try {
