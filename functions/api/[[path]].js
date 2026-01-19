@@ -50,13 +50,13 @@ app.post('/posts', async (c) => {
         const auth = c.req.header('Authorization');
         if (auth !== 'Bearer simple-admin-token') return c.json({ error: 'Unauthorized' }, 401);
 
-        const { title, content, format, slug } = await c.req.json();
+        const { title, content, format, slug, tags } = await c.req.json();
         if (!title || !content) return c.json({ error: 'Title and content are required' }, 400);
 
         const finalSlug = slug || title.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
 
-        await c.env.DB.prepare('INSERT INTO posts (title, content, format, slug, published) VALUES (?, ?, ?, ?, ?)')
-            .bind(title, content, format || 'html', finalSlug, true)
+        await c.env.DB.prepare('INSERT INTO posts (title, content, format, slug, tags, published) VALUES (?, ?, ?, ?, ?, ?)')
+            .bind(title, content, format || 'html', finalSlug, tags || '', true)
             .run();
         return c.json({ success: true });
     } catch (e) {
@@ -71,13 +71,13 @@ app.put('/posts/:id', async (c) => {
         if (auth !== 'Bearer simple-admin-token') return c.json({ error: 'Unauthorized' }, 401);
 
         const id = c.req.param('id');
-        const { title, content, format, slug } = await c.req.json();
+        const { title, content, format, slug, tags } = await c.req.json();
         if (!title || !content) return c.json({ error: 'Title and content are required' }, 400);
 
         const finalSlug = slug || title.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
 
-        await c.env.DB.prepare('UPDATE posts SET title = ?, content = ?, format = ?, slug = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?')
-            .bind(title, content, format || 'html', finalSlug, id)
+        await c.env.DB.prepare('UPDATE posts SET title = ?, content = ?, format = ?, slug = ?, tags = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?')
+            .bind(title, content, format || 'html', finalSlug, tags || '', id)
             .run();
         return c.json({ success: true });
     } catch (e) {

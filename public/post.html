@@ -17,7 +17,10 @@
     <div class="container" style="max-width: 800px;">
         <header>
             <div class="logo">GPT PARK</div>
-            <a href="/" class="back-link" style="margin-bottom: 0;">← Home</a>
+            <div style="display: flex; gap: 1rem; align-items: center;">
+                <button class="theme-toggle" onclick="toggleTheme()" id="theme-btn">🌙 Mode</button>
+                <a href="/" class="back-link" style="margin-bottom: 0;">← Home</a>
+            </div>
         </header>
 
         <article id="post-view">
@@ -29,6 +32,7 @@
                 <h1 id="post-title"
                     style="font-size: 3rem; margin-bottom: 1.5rem; font-family: var(--font-heading); background: linear-gradient(to right, white, #a1a1aa); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
                 </h1>
+                <div id="post-tags" class="tags-container" style="margin-bottom: 1rem;"></div>
                 <div id="post-date" style="color: var(--primary); margin-bottom: 3rem; font-size: 0.9rem;"></div>
                 <div id="post-body" class="post-content"></div>
             </div>
@@ -44,6 +48,19 @@
         const urlParams = new URLSearchParams(window.location.search);
         const postId = urlParams.get('id');
 
+        // Theme Logic
+        function applyTheme() {
+            const theme = localStorage.getItem('theme') || 'dark';
+            if (theme === 'light') document.body.classList.add('light-mode');
+            document.getElementById('theme-btn').innerText = theme === 'light' ? '☀️ Light' : '🌙 Dark';
+        }
+        function toggleTheme() {
+            const isLight = document.body.classList.toggle('light-mode');
+            localStorage.setItem('theme', isLight ? 'light' : 'dark');
+            document.getElementById('theme-btn').innerText = isLight ? '☀️ Light' : '🌙 Dark';
+        }
+        applyTheme();
+
         async function loadSinglePost() {
             if (!postId) {
                 window.location.href = '/';
@@ -53,25 +70,26 @@
             try {
                 const res = await fetch(`/api/posts/${postId}`);
                 if (!res.ok) throw new Error('Post not found');
-                const post = await postResponseJson(res);
+                const post = await res.json();
 
-                document.title = `${post.title} - GPT PARK`;
                 document.getElementById('post-title').innerText = post.title;
-                document.getElementById('post-date').innerText = new Date(post.created_at).toLocaleDateString('ko-KR', {
-                    year: 'numeric', month: 'long', day: 'numeric', weekday: 'long'
-                });
+                document.getElementById('post-date').innerText = new Date(post.created_at).toLocaleDateString();
                 document.getElementById('post-body').innerHTML = post.content;
+
+                const tagsHtml = (post.tags || '').split(',').filter(t => t.trim()).map(t => `<span class="tag">${t.trim()}</span>`).join('');
+                document.getElementById('post-tags').innerHTML = tagsHtml;
 
                 document.getElementById('loader').style.display = 'none';
                 document.getElementById('post-content-area').style.display = 'block';
+
+                const sRes = await fetch('/api/settings');
+                const settings = await sRes.json();
+                document.querySelector('.logo').innerText = settings.title || 'GPT PARK 의 인사이트';
+                document.title = `${post.title} - ${settings.title || 'GPT PARK 의 인사이트'}`;
+
             } catch (e) {
                 document.getElementById('post-view').innerHTML = `<p style="text-align:center; padding: 4rem;">Error: ${e.message}</p>`;
             }
-        }
-
-        async function postResponseJson(res) {
-            const data = await res.json();
-            return data;
         }
 
         window.onscroll = function () {

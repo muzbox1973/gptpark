@@ -51,7 +51,11 @@
                     </div>
                     <input type="text" id="post-title" placeholder="Post Title"
                         style="font-size: 1.2rem; font-weight: bold;">
-                    <input type="text" id="post-slug" placeholder="slug-url-optional" style="font-size: 0.9rem;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <input type="text" id="post-slug" placeholder="slug-url-optional" style="font-size: 0.9rem;">
+                        <input type="text" id="post-tags" placeholder="Keywords (comma separated)"
+                            style="font-size: 0.9rem;">
+                    </div>
 
                     <div class="editor-container">
                         <div id="quill-editor" style="height: 300px;"></div>

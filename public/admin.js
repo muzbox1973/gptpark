@@ -168,6 +168,7 @@ function showEditor(isEdit = false) {
         currentPostId = null;
         document.getElementById('post-title').value = '';
         document.getElementById('post-slug').value = '';
+        document.getElementById('post-tags').value = '';
         quill.root.innerHTML = '';
         document.getElementById('html-editor').value = '';
     }
@@ -183,6 +184,7 @@ async function editPost(id) {
 
         document.getElementById('post-title').value = post.title;
         document.getElementById('post-slug').value = post.slug;
+        document.getElementById('post-tags').value = post.tags || '';
 
         if (document.getElementById('html-toggle').checked) {
             document.getElementById('html-editor').value = post.content;

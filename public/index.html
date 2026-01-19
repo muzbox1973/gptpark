@@ -14,8 +14,13 @@
     <div class="container">
         <header>
             <div class="logo">GPT PARK</div>
-            <a href="/admin.html"
-                style="color: var(--primary); text-decoration: none; font-size: 0.9rem; opacity: 0.8;">Admin →</a>
+            <div style="display: flex; gap: 1rem; align-items: center;">
+                <button class="theme-toggle" onclick="toggleTheme()" id="theme-btn">
+                    🌙 Mode
+                </button>
+                <a href="/admin.html"
+                    style="color: var(--primary); text-decoration: none; font-size: 0.9rem; opacity: 0.8;">Admin →</a>
+            </div>
         </header>
 
         <section class="hero" style="margin-bottom: 6rem; text-align: center; padding: 4rem 0;">
@@ -42,6 +47,19 @@
     </div>
 
     <script>
+        // Theme Logic
+        function applyTheme() {
+            const theme = localStorage.getItem('theme') || 'dark';
+            if (theme === 'light') document.body.classList.add('light-mode');
+            document.getElementById('theme-btn').innerText = theme === 'light' ? '☀️ Light' : '🌙 Dark';
+        }
+        function toggleTheme() {
+            const isLight = document.body.classList.toggle('light-mode');
+            localStorage.setItem('theme', isLight ? 'light' : 'dark');
+            document.getElementById('theme-btn').innerText = isLight ? '☀️ Light' : '🌙 Dark';
+        }
+        applyTheme();
+
         async function loadPosts() {
             try {
                 const res = await fetch('/api/posts');
@@ -65,7 +83,6 @@
                     card.className = 'card';
                     card.onclick = () => window.location.href = `/post.html?id=${post.id}`;
 
-                    // Mouse effect
                     card.onmousemove = (e) => {
                         const rect = card.getBoundingClientRect();
                         const x = e.clientX - rect.left;
@@ -74,16 +91,18 @@
                         card.style.setProperty('--mouse-y', `${y}px`);
                     };
 
-                    // Strip HTML for excerpt
                     const temp = document.createElement('div');
                     temp.innerHTML = post.content;
                     const text = temp.textContent || temp.innerText || "";
                     const excerpt = text.substring(0, 140) + '...';
 
+                    const tagsHtml = (post.tags || '').split(',').filter(t => t.trim()).map(t => `<span class="tag">${t.trim()}</span>`).join('');
+
                     card.innerHTML = `
                         <div class="card-glow"></div>
                         <h2>${post.title}</h2>
                         <p>${excerpt}</p>
+                        <div class="tags-container">${tagsHtml}</div>
                         <div style="margin-top: 1.5rem; font-size: 0.75rem; color: var(--primary); font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">
                             ${new Date(post.created_at).toLocaleDateString()}
                         </div>
@@ -98,11 +117,10 @@
             try {
                 const res = await fetch('/api/settings');
                 const settings = await res.json();
-                if (settings.title) {
-                    document.title = `${settings.title} - AI Insights`;
-                    document.querySelector('.logo').innerText = settings.title;
-                    document.querySelector('.hero h1').innerText = settings.title === 'GPT PARK' ? 'Future of AI Intelligence' : settings.title;
-                }
+                const title = settings.title || 'GPT PARK 의 인사이트';
+                document.title = `${title}`;
+                document.querySelector('.logo').innerText = title;
+                document.querySelector('.hero h1').innerText = title;
                 if (settings.description) {
                     document.querySelector('.hero p').innerText = settings.description;
                 }
