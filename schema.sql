@@ -14,6 +14,7 @@ CREATE TABLE posts (
     excerpt TEXT,
     content TEXT NOT NULL,
     format TEXT DEFAULT 'html',
+    tags TEXT,
     published BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
