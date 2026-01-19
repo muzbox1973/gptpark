@@ -9,8 +9,7 @@
         "db:init": "wrangler d1 execute gpt-park-db --file=./schema.sql"
     },
     "dependencies": {
-        "hono": "^4.0.0",
-        "@cloudflare/kv-asset-handler": "^0.3.4"
+        "hono": "^4.0.0"
     },
     "devDependencies": {
         "wrangler": "^3.0.0"

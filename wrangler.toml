@@ -6,6 +6,3 @@ compatibility_date = "2024-04-01"
 binding = "DB"
 database_name = "gpt-park-db"
 database_id = "92276bb0-0517-4135-b9ab-823e398419bf"
-
-[site]
-bucket = "./public"
