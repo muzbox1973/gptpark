@@ -32,6 +32,18 @@ app.get('/posts', async (c) => {
     }
 });
 
+// Get Single Post
+app.get('/posts/:id', async (c) => {
+    try {
+        const id = c.req.param('id');
+        const post = await c.env.DB.prepare('SELECT * FROM posts WHERE id = ?').bind(id).first();
+        if (!post) return c.json({ error: 'Post not found' }, 404);
+        return c.json(post);
+    } catch (e) {
+        return c.json({ error: e.message }, 500);
+    }
+});
+
 // Create Post
 app.post('/posts', async (c) => {
     try {

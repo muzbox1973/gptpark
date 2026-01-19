@@ -34,17 +34,18 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-bottom: 3rem;
-    border-bottom: 1px solid var(--border-color);
+    padding: 1.5rem 0;
     margin-bottom: 3rem;
 }
 
 .logo {
-    font-size: 1.5rem;
+    font-family: var(--font-heading);
     font-weight: 700;
+    font-size: 1.5rem;
     background: linear-gradient(to right, var(--primary), var(--accent));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+    letter-spacing: -0.5px;
 }
 
 /* Post Grid */
@@ -57,58 +58,115 @@ header {
 .card {
     background: var(--card-bg);
     border: 1px solid var(--border-color);
-    border-radius: 1rem;
-    padding: 1.5rem;
-    backdrop-filter: blur(10px);
-    transition: transform 0.2s, border-color 0.2s;
+    border-radius: 1.25rem;
+    padding: 2rem;
+    backdrop-filter: blur(20px);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--glass-grad);
+    z-index: -1;
 }
 
 .card:hover {
-    transform: translateY(-4px);
-    border-color: var(--primary);
+    transform: translateY(-8px) scale(1.02);
+    border-color: rgba(34, 211, 238, 0.4);
+    box-shadow: var(--neon-glow);
 }
 
 .card h2 {
-    margin-top: 0;
-    font-size: 1.25rem;
+    margin-bottom: 1rem;
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    font-weight: 600;
+    line-height: 1.3;
 }
 
 .card p {
     color: var(--text-muted);
+    font-size: 1rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Post Detail Styles */
+.post-content {
+    font-size: 1.125rem;
+    line-height: 1.8;
+    color: #e4e4e7;
+}
+
+.post-content h1,
+.post-content h2,
+.post-content h3 {
+    margin: 2rem 0 1rem;
+    color: var(--text-main);
+}
+
+.post-content img {
+    max-width: 100%;
+    border-radius: 1rem;
+    margin: 2rem 0;
+}
+
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    color: var(--text-muted);
+    text-decoration: none;
+    margin-bottom: 2rem;
     font-size: 0.9rem;
-    line-height: 1.6;
+    transition: color 0.2s;
+}
+
+.back-link:hover {
+    color: var(--primary);
 }
 
 /* Admin Auth */
 .login-container {
     max-width: 400px;
-    margin: 100px auto;
-    padding: 2rem;
+    margin: 10vh auto;
     background: var(--card-bg);
-    border-radius: 1rem;
+    padding: 3rem;
+    border-radius: 1.5rem;
     border: 1px solid var(--border-color);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
 }
 
 input,
-button,
-select,
-textarea {
+textarea,
+select {
     width: 100%;
-    padding: 0.75rem;
-    margin-bottom: 1rem;
-    border-radius: 0.5rem;
+    background: rgba(255, 255, 255, 0.05);
     border: 1px solid var(--border-color);
-    background: rgba(0, 0, 0, 0.2);
+    padding: 0.8rem 1rem;
+    border-radius: 0.5rem;
     color: white;
-    box-sizing: border-box;
+    margin-bottom: 1rem;
+    font-family: inherit;
 }
 
 button {
-    background: var(--primary);
-    color: black;
+    background: linear-gradient(to right, var(--primary), var(--accent));
+    color: white;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 0.5rem;
     font-weight: 600;
     cursor: pointer;
-    border: none;
     transition: opacity 0.2s;
 }
 

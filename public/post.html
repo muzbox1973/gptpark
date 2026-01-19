@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post - GPT PARK</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Outfit:wght@700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <div class="container" style="max-width: 800px;">
+        <header>
+            <div class="logo">GPT PARK</div>
+            <a href="/" class="back-link" style="margin-bottom: 0;">← Home</a>
+        </header>
+
+        <article id="post-view">
+            <div id="loader" style="text-align: center; padding: 4rem;">
+                <p style="color: var(--text-muted);">Loading Insight...</p>
+            </div>
+            <div id="post-content-area" style="display: none;">
+                <h1 id="post-title" style="font-size: 2.5rem; margin-bottom: 1rem; font-family: var(--font-heading);">
+                </h1>
+                <div id="post-date" style="color: var(--primary); margin-bottom: 3rem; font-size: 0.9rem;"></div>
+                <div id="post-body" class="post-content"></div>
+            </div>
+        </article>
+
+        <footer
+            style="margin-top: 5rem; padding-top: 2rem; border-top: 1px solid var(--border-color); text-align: center; color: var(--text-muted); font-size: 0.8rem;">
+            &copy; 2026 GPT PARK. Collective Intelligence.
+        </footer>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const postId = urlParams.get('id');
+
+        async function loadSinglePost() {
+            if (!postId) {
+                window.location.href = '/';
+                return;
+            }
+
+            try {
+                const res = await fetch(`/api/posts/${postId}`);
+                if (!res.ok) throw new Error('Post not found');
+                const post = await postResponseJson(res);
+
+                document.title = `${post.title} - GPT PARK`;
+                document.getElementById('post-title').innerText = post.title;
+                document.getElementById('post-date').innerText = new Date(post.created_at).toLocaleDateString('ko-KR', {
+                    year: 'numeric', month: 'long', day: 'numeric', weekday: 'long'
+                });
+                document.getElementById('post-body').innerHTML = post.content;
+
+                document.getElementById('loader').style.display = 'none';
+                document.getElementById('post-content-area').style.display = 'block';
+            } catch (e) {
+                document.getElementById('post-view').innerHTML = `<p style="text-align:center; padding: 4rem;">Error: ${e.message}</p>`;
+            }
+        }
+
+        async function postResponseJson(res) {
+            const data = await res.json();
+            return data;
+        }
+
+        loadSinglePost();
+    </script>
+</body>
+
+</html>
