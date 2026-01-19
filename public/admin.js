@@ -191,13 +191,16 @@ async function savePost() {
 
     const token = localStorage.getItem('token');
 
+    const format = document.getElementById('html-toggle').checked ? 'html' : 'quill';
+    const bodyObj = { title, slug, content, format };
+
     const res = await fetch(currentPostId ? `${API_URL}/posts/${currentPostId}` : `${API_URL}/posts`, {
         method: currentPostId ? 'PUT' : 'POST',
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify({ title, slug, content })
+        body: JSON.stringify(bodyObj)
     });
 
     const data = await res.json();

@@ -65,6 +65,15 @@
                     card.className = 'card';
                     card.onclick = () => window.location.href = `/post.html?id=${post.id}`;
 
+                    // Mouse effect
+                    card.onmousemove = (e) => {
+                        const rect = card.getBoundingClientRect();
+                        const x = e.clientX - rect.left;
+                        const y = e.clientY - rect.top;
+                        card.style.setProperty('--mouse-x', `${x}px`);
+                        card.style.setProperty('--mouse-y', `${y}px`);
+                    };
+
                     // Strip HTML for excerpt
                     const temp = document.createElement('div');
                     temp.innerHTML = post.content;
@@ -72,6 +81,7 @@
                     const excerpt = text.substring(0, 140) + '...';
 
                     card.innerHTML = `
+                        <div class="card-glow"></div>
                         <h2>${post.title}</h2>
                         <p>${excerpt}</p>
                         <div style="margin-top: 1.5rem; font-size: 0.75rem; color: var(--primary); font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">

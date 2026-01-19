@@ -96,6 +96,19 @@ header {
     overflow: hidden;
 }
 
+/* Card Mouse Glow Effect */
+.card-glow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at var(--mouse-x) var(--mouse-y), rgba(34, 211, 238, 0.15) 0%, transparent 80%);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
 .card::before {
     content: '';
     position: absolute;
@@ -105,6 +118,10 @@ header {
     bottom: 0;
     background: var(--glass-grad);
     z-index: -1;
+}
+
+.card:hover .card-glow {
+    opacity: 1;
 }
 
 .card:hover {
