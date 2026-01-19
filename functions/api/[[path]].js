@@ -113,4 +113,33 @@ app.post('/db/query', async (c) => {
     }
 });
 
+// Settings API
+app.get('/settings', async (c) => {
+    try {
+        const { results } = await c.env.DB.prepare('SELECT * FROM settings').all();
+        const settings = {};
+        results.forEach(row => settings[row.key] = row.value);
+        return c.json(settings);
+    } catch (e) {
+        return c.json({ error: e.message }, 500);
+    }
+});
+
+app.post('/settings', async (c) => {
+    try {
+        const auth = c.req.header('Authorization');
+        if (auth !== 'Bearer simple-admin-token') return c.json({ error: 'Unauthorized' }, 401);
+
+        const body = await c.req.json();
+        for (const [key, value] of Object.entries(body)) {
+            await c.env.DB.prepare('INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)')
+                .bind(key, value)
+                .run();
+        }
+        return c.json({ success: true });
+    } catch (e) {
+        return c.json({ error: e.message }, 500);
+    }
+});
+
 export const onRequest = (context) => app.fetch(context.request, context.env, context);

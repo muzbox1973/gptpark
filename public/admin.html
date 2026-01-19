@@ -85,8 +85,20 @@
 
                 <!-- Settings Tab -->
                 <div id="tab-settings" style="display: none;">
-                    <h2>Settings</h2>
-                    <p>Environment configuration is managed via <code>wrangler.toml</code>.</p>
+                    <h2>Site Settings</h2>
+                    <p style="color: var(--text-muted); margin-bottom: 2rem;">Configure your blog's identity.</p>
+
+                    <div class="card" style="cursor: default;">
+                        <label>Blog Title</label>
+                        <input type="text" id="setting-title" placeholder="GPT PARK">
+
+                        <label>Hero Description</label>
+                        <textarea id="setting-description"
+                            placeholder="Exploring the boundaries of technology and humanity."
+                            style="height: 100px;"></textarea>
+
+                        <button onclick="saveSettings()" style="width: auto; margin-top: 1rem;">Save Settings</button>
+                    </div>
                 </div>
             </main>
         </div>

@@ -94,6 +94,24 @@
                 console.error(e);
             }
         }
+        async function loadSiteData() {
+            try {
+                const res = await fetch('/api/settings');
+                const settings = await res.json();
+                if (settings.title) {
+                    document.title = `${settings.title} - AI Insights`;
+                    document.querySelector('.logo').innerText = settings.title;
+                    document.querySelector('.hero h1').innerText = settings.title === 'GPT PARK' ? 'Future of AI Intelligence' : settings.title;
+                }
+                if (settings.description) {
+                    document.querySelector('.hero p').innerText = settings.description;
+                }
+            } catch (e) {
+                console.error('Settings load fail');
+            }
+        }
+
+        loadSiteData();
         loadPosts();
     </script>
 </body>

@@ -73,6 +73,42 @@ function switchTab(tab) {
     document.getElementById(`tab-${tab}`).style.display = 'block';
 
     if (tab === 'posts') loadPosts();
+    if (tab === 'settings') loadSettings();
+}
+
+// Settings
+async function loadSettings() {
+    try {
+        const res = await fetch(`${API_URL}/settings`);
+        const settings = await res.json();
+        if (settings.title) document.getElementById('setting-title').value = settings.title;
+        if (settings.description) document.getElementById('setting-description').value = settings.description;
+    } catch (e) {
+        console.error('Failed to load settings');
+    }
+}
+
+async function saveSettings() {
+    const title = document.getElementById('setting-title').value;
+    const description = document.getElementById('setting-description').value;
+    const token = localStorage.getItem('token');
+
+    try {
+        const res = await fetch(`${API_URL}/settings`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ title, description })
+        });
+        const data = await res.json();
+        if (data.success) {
+            alert('Settings updated! Refresh the home page to see changes.');
+        }
+    } catch (e) {
+        alert('Error saving settings: ' + e.message);
+    }
 }
 
 // Posts
