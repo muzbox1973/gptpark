@@ -6,6 +6,7 @@ binding = "DB"
 database_name = "gpt-park-db"
 database_id = "92276bb0-0517-4135-b9ab-823e398419bf" # User needs to replace this after creation
 
+main = "src/index.js"
+
 [site]
 bucket = "./public"
-entry-point = "workers-site"
