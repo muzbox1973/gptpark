@@ -77,29 +77,49 @@ function switchTab(tab) {
 
 // Posts
 async function loadPosts() {
-    const res = await fetch(`${API_URL}/posts`);
-    const posts = await res.json();
-    const list = document.getElementById('posts-list');
-    list.innerHTML = '';
+    try {
+        const res = await fetch(`${API_URL}/posts`);
+        const posts = await res.json();
 
-    posts.forEach(post => {
-        const item = document.createElement('div');
-        item.style.padding = '1rem';
-        item.style.borderBottom = '1px solid var(--border-color)';
-        item.style.display = 'flex';
-        item.style.justifyContent = 'space-between';
+        const list = document.getElementById('posts-list');
+        list.innerHTML = '';
 
-        item.innerHTML = `
-            <div>
-                <strong>${post.title}</strong>
-                <div style="font-size: 0.8rem; color: var(--text-muted);">${new Date(post.created_at).toLocaleDateString()}</div>
-            </div>
-            <div>
-                <button class="btn-sm btn-danger" onclick="deletePost(${post.id})">Delete</button>
-            </div>
-        `;
-        list.appendChild(item);
-    });
+        if (!Array.isArray(posts)) {
+            list.innerHTML = `<p style="padding: 2rem; color: #f87171; text-align: center; background: rgba(239, 68, 68, 0.05); border-radius: 1rem;">
+                Error: ${posts.error || 'Failed to load insightful data'}
+            </p>`;
+            return;
+        }
+
+        if (posts.length === 0) {
+            list.innerHTML = '<p style="padding: 2rem; color: var(--text-muted); text-align: center;">No insights recorded yet.</p>';
+            return;
+        }
+
+        posts.forEach(post => {
+            const item = document.createElement('div');
+            item.className = 'card';
+            item.style.marginBottom = '1rem';
+            item.style.display = 'flex';
+            item.style.justifyContent = 'space-between';
+            item.style.alignItems = 'center';
+            item.style.padding = '1rem 1.5rem';
+
+            item.innerHTML = `
+                <div>
+                    <h3 style="font-size: 1.1rem; margin: 0;">${post.title}</h3>
+                    <div style="font-size: 0.8rem; color: var(--text-muted);">${new Date(post.created_at).toLocaleDateString()}</div>
+                </div>
+                <div>
+                    <button class="btn-sm btn-danger" onclick="deletePost(${post.id})">Delete</button>
+                </div>
+            `;
+            list.appendChild(item);
+        });
+    } catch (e) {
+        console.error(e);
+        document.getElementById('posts-list').innerHTML = `<p style="color:red">Connection Error: ${e.message}</p>`;
+    }
 }
 
 function showEditor() {
